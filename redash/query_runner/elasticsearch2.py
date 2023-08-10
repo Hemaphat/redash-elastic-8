@@ -265,7 +265,7 @@ class XPackSQLElasticSearch(ElasticSearch2):
 
     def _build_query(self, query: str) -> Tuple[dict, str, Optional[list]]:
         sql_query = {"query": query}
-        sql_query_url = "/_xpack/sql"
+        sql_query_url = "/_sql"
         return sql_query, sql_query_url, None
 
     @classmethod
