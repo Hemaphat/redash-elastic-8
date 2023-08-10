@@ -42,6 +42,7 @@ RUN useradd --create-home redash
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
   curl \
+  ca-certificates \
   gnupg \
   build-essential \
   pwgen \
@@ -63,7 +64,6 @@ RUN apt-get update && \
   libsasl2-modules-gssapi-mit && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
-
 
 ARG TARGETPLATFORM
 ARG databricks_odbc_driver_url=https://databricks-bi-artifacts.s3.us-east-2.amazonaws.com/simbaspark-drivers/odbc/2.6.26/SimbaSparkODBC-2.6.26.1045-Debian-64bit.zip
@@ -107,6 +107,8 @@ COPY --chown=redash . /app
 COPY --from=frontend-builder --chown=redash /frontend/client/dist /app/client/dist
 RUN chown redash /app
 USER redash
+
+RUN mkdir -p aws-tls && curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem --output aws-tls/global-bundle.pem
 
 ENTRYPOINT ["/app/bin/docker-entrypoint"]
 CMD ["server"]
